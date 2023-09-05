@@ -1,0 +1,83 @@
+.Page{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.page p{
+    display: block;
+    margin-top: 20px;
+    font-size: 2.3rem;
+}
+.Opt{
+    display: flex;
+    flex-direction: column;
+
+    margin-top: 40px;
+
+
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    border-radius: 9px;
+    background-color: rgba(255, 255, 255, 0.5);
+    width: 720px;
+    height: 500px;
+  
+}
+
+.b{
+    font-size: 1rem;
+    display: flex;
+    
+    padding: 5px;
+    padding: 6px 20px;
+    align-items: center;
+    height: 2.2rem;
+    border-radius: 20px;
+    cursor: pointer;
+    background-color:rgb(187, 239, 239);
+    border: 2px solid gray;
+    text-decoration: none;
+    color: black;
+}
+.b:hover{
+    border-color: black;
+}
+
+.itemname,.price{
+    border: 2px solid gray;
+    padding: 4px;
+    width: 250px;
+
+}
+
+.textarea{
+    width: 300px;
+    border-color: gray;
+}
+.sub{
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.head{
+    display: flex;
+    justify-content: center;
+    border-radius: 9px 9px 0 0;
+    background-color:rgb(187, 239, 239);
+    padding: 5px;
+    margin-bottom: 7px;
+}
+.head p{
+    font-size: 2.3rem;
+    
+}
+
+.bd{
+    margin-left: 30px;
+}
+
+.form{
+    gap: 2px;
+}

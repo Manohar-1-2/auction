@@ -1,0 +1,34 @@
+.heroWrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #7398f1;
+    background-color: azure;
+
+}
+.heroLeft{
+    flex:0.5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+.heading{
+    font-size: 5rem;
+    font-weight: 600;
+    color: #1b1b1b;
+}
+
+.heroRight{
+    flex: 0.5;
+}
+.imgCont{
+    height: 600px;
+    overflow: hidden;
+    object-fit: cover;
+}
+.imgCont img{
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+}

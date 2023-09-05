@@ -1,0 +1,70 @@
+
+  const [seconds, setSeconds] = useState(60); // Initial countdown time in seconds
+  const [isActive, setIsActive] = useState(false);
+
+  const [bid, setBid] = useState('');
+  const [startingBid, setStaringBid] = useState('');
+  const [currentPlacedBid, setCurrentPlacedBid] = useState('');
+  const [placedBidList,setPlacedBidList]=useState([])
+  //const [timerStarted,setTimerStarted]=useState(false)
+
+
+  const rData= async ()=>{
+    const data=await (await fetch("http://localhost:3002")).json()
+    console.log(data)
+
+  }
+
+  const handleBid = (event) => {
+    event.preventDefault();
+    if(bid<=currentPlacedBid){
+      alert("placed higher bid amount than current Amount")
+    }
+    else{
+      scoket.emit("bid",bid)
+      setBid('')
+    }
+
+     
+  };
+  const handleStartAuction=()=>{
+    scoket.emit("start")
+  }
+  const timerStartEvent= async ()=>{
+    scoket.on("startTimer",()=>{
+      console.log("timer started")
+      setIsActive(true)
+    })
+  }
+  const auctionStartEvent= async ()=>{
+    scoket.on("startAuction",(startingAmount)=>{
+      console.log("timer started")
+      setIsActive(true)
+      setStaringBid(startingAmount)
+      setCurrentPlacedBid(startingAmount)
+    })
+  }
+  const placedBidR=()=>{
+    scoket.on("placedBid",(id,bidAmount)=>{
+      setPlacedBidList((prevBids)=>[...prevBids,[id,bidAmount]])
+      setCurrentPlacedBid(bidAmount)
+    })
+  }
+  const timerResetEvent= async ()=>{
+    scoket.on("resetTimer",()=>{
+      console.log("timer reseted")
+      setSeconds(60)
+    })
+  }
+
+  const auctionEndEvent=()=>{
+    scoket.on("auctionEnd",(winner)=>{
+      alert(`Auction Ended winner is ${winner}`)
+    })
+  }
+
+  useEffect(()=>{
+    auctionStartEvent()
+    timerResetEvent()
+    auctionEndEvent()
+  },[scoket])
