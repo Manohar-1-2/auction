@@ -12,7 +12,7 @@ const {serverEventEmitter,startCountdown,resetCountdown}=require('./countDown')
 const app=express()
 connectDb()
 const server=http.createServer(app)
-const startingBidAmount=100
+let startingBidAmount=100
 let currentHighestBidder=[]
 const {Server}=require("socket.io")
 app.use(cors())
@@ -24,29 +24,53 @@ const io=new Server(server,{
         methods:["GET","POST"]
     }
 })
+
+function verifyJwt(socket, next) {
+    const token = socket.handshake.auth.token;
+    console.log(token)
+    if (!token) {
+      return next(new Error('Authentication error: Token missing'));
+    }
+  
+    jwt.verify(token,  process.env.ACESS_TOK, (err, decoded) => {
+      if (err) {
+        return next(new Error('Authentication error: Invalid token'));
+      }
+      socket.decoded = decoded; // Attach user information to the socket
+      next();
+    });
+  }
+  io.use((socket, next) => {
+    verifyJwt(socket, next);
+  });
+const joinedusers=[]
 io.on("connection",(socket)=>{
-    console.log(`user connection :${socket}`)
+    io.emit('joined',joinedusers)
+    socket.on("join",()=>{
+        joinedusers.push(socket.decoded.username)
+        io.emit('joined',joinedusers)
+    })
+    console.log(`user connection :${socket.decoded.username}`)
     socket.on("mess",(mess)=>{
         console.log(`${socket.id} sends : ${mess} `)
         io.emit('recive',mess)
     })
-
     socket.on("start",()=>{
         io.emit("startAuction",startingBidAmount,()=>{console.log("auction started")})
         startCountdown()
 
         serverEventEmitter.on("timeRanOut",()=>{
-            io.emit("auctionEnd",socket.id)
+            io.emit("auctionEnd",currentHighestBidder[0])
             console.log("timeout")
         })
     })
 
     socket.on("bid",(bidAmount)=>{
-        console.log(`bid is placed by user ${socket.id}:${bidAmount}`)
-        currentHighestBidder=[socket.id,bidAmount]
+        console.log(`bid is placed by user ${socket.decoded.username}:${bidAmount}`)
+        currentHighestBidder=[socket.decoded.username,bidAmount]
         resetCountdown()
         io.emit("resetTimer")
-        io.emit("placedBid",socket.id,bidAmount)
+        io.emit("placedBid",socket.decoded.username,bidAmount)
     })
 })
 const createUser= async(username,pass)=>{
@@ -72,6 +96,7 @@ app.get("/",(req,res)=>{
 })
 const invalidatedTokens = new Set();
 app.post("/login",async(req,res)=>{
+  
     const founduser= await user.findOne({username:req.body.username}).exec()
     if(!founduser){console.log("user not found");return}
     if(founduser.password==req.body.password){
@@ -153,12 +178,29 @@ app.get("/getmyauc",verify,async(req,res)=>{
 app.get("/auctionlist",verify,async(req,res)=>{
     const foundedAuc=await userAuction.find({postedBy:{$ne:req.user.username}})
 
-    res.status(200).json(foundedAuc)
+    res.status(200).json(foundedAuc) 
 }) 
+app.post("/start",verify,async(req,res)=>{
+    const foundedAuc=await userAuction.findByIdAndUpdate(req.body.id,{status:"running"})
+    startingBidAmount=foundedAuc.price
+    res.status(200).json({s:"sucess"})
+    console.log(res.statusCode)
+})
+app.post("/join",verify,async(req,res)=>{
 
+    const foundedAuc=await userAuction.findById(req.body.id)
+    if(foundedAuc.status=="running"){
+        res.status(200).json({s:"run"})
+    }
+    else{
+        res.status(400).json({s:"not started"})
+    }
+})
 app.post("/joinauc",verify,async(req,res)=>{
     const aucid=req.body.id
     const foundedAuc=await userAuction.findById(aucid)
+    const userr= await user.findOne({username:req.user.username}).exec()
+    console.log(userr)
     const joined=foundedAuc.joinedUser
     for(let i=0;i<joined.length;i++){
         if(joined[i]==req.user.username){
@@ -169,11 +211,28 @@ app.post("/joinauc",verify,async(req,res)=>{
     foundedAuc.joinedUser.push(req.user.username)
     const result = await userAuction.findByIdAndUpdate({ _id:aucid },{
         $set: {
-            joinedUser:foundedAuc.joinedUser
+            joinedUser:foundedAuc.joinedUser 
         },
       });
+
+    const aucArray=userr.joinedAuc
+    aucArray.push(aucid)
+    const founduser=await user.findOneAndUpdate({username:req.user.username},{$set: {
+        joinedAuc:aucArray
+    },})
     res.status(200).json({mess:"sucessfully joined"})
 })
+
+app.get("/getJoinedauc",verify,async(req,res)=>{
+    const auc=await user.findOne({username:req.user.username}).exec()
+    const aucs=[]
+    for(let i=0;i<auc.joinedAuc.length;i++){
+        let t=await userAuction.findOne({_id:auc.joinedAuc[i]}).exec()
+        aucs.push(t)
+    }
+    res.status(200).json(aucs)
+})
+
 
 mongoose.connection.once("open",()=>{
     console.log("Connected to mongoDb")

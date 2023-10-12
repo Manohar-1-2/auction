@@ -35,7 +35,7 @@ export const LoginPage = ({setIslogin,setLogedUser}) => {
           </div>
           <div>
                       
-            <label htmlFor="userBox" id="pass">Passwoard</label>
+            <label htmlFor="userBox" id="pass">Password</label>
             <div className="passDiv">
               <input type="password" id="username" required onChange={(e)=>{setPassword(e.target.value)}}/>
             </div>

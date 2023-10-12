@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { AuctionCard } from '../../componets/Auctioncard/AuctionCard';
 import "./allauctions.css"
 
-export const AllAuctions = () => {
+export const AllAuctions = ({logedUser}) => {
     const storedAccessToken = localStorage.getItem('accessToken');
     const [details,setDetails]=useState([])
     const handleget=async ()=>{
@@ -22,7 +22,7 @@ export const AllAuctions = () => {
         const res=await fetch("http://localhost:3002/joinauc",{
             method: 'POST',
             headers: { Authorization: `Bearer ${storedAccessToken}`,'Content-Type': 'application/json'},
-            body:JSON.stringify({id})
+            body:JSON.stringify({id,logedUser})
           })
           console.log(res.status)
           if(res.status==202){
@@ -40,7 +40,7 @@ export const AllAuctions = () => {
     <div className='allaucpage'>
         {details.map((details)=>(
         <div key={details.price}>
-          <AuctionCard details={details} buttontext={"Join Auction"} handlejoin={handlejoin} t={false}/>
+          <AuctionCard details={details} buttontext={"Register for  Auction"} handlejoin={handlejoin} t={1}/>
         </div>))
         }
     </div>

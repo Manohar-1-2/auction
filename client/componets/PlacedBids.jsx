@@ -1,16 +1,8 @@
 import React from 'react'
 import { useEffect,useRef } from 'react'
-export const PlacedBids = ({placedBidR,placedBidList,setPlacedBidList,scoket}) => {
-    const effectRan=useRef(false)
-
-    useEffect(()=>{
-        if(effectRan.current===false){
-            placedBidR()
-            return(()=>{effectRan.current=true})
-        }
-    },[scoket])
+export const PlacedBids = ({placedBidList}) => {
     return (
-        <div>
+        <div className='placedBid'>
             {placedBidList.map((e)=>(<p>{`${e[0]}  ${e[1]} `}</p>))}
         </div>
   )

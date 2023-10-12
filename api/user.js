@@ -8,7 +8,11 @@ const userSehema=new Schema({
     password:{
         type:String,
         required:true
-    }
+    },
+    joinedAuc:{
+        type:Array,
+        required:false,
+    },
 })
 
 const userAuctionSehema=new Schema({
@@ -38,9 +42,13 @@ const userAuctionSehema=new Schema({
     img:{
         type:Buffer,
         required:true
+    },
+    status:{
+        type:String,
+        required:false
     }
 
-});
+}); 
 
 
 const AuctionRoomSehema=new Schema({

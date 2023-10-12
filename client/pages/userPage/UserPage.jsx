@@ -16,13 +16,16 @@ export const UserPage = ({logedUser}) => {
         </p>
         <div className="opt">
           <Link className='b' to={"reg"}>
-            Register Auction
+            Create Auction
           </Link>
           <Link className='b' to={"myauctions"}>
             My Auctions
           </Link>
           <Link className='b' to={"allauctions"}>
-            Join Auctions
+            Register for Auction
+          </Link>
+          <Link className='b' to={"joininAuc"}>
+            Join Auction
           </Link>
         </div>
     </div>

@@ -16,7 +16,6 @@ const BidForm = ({handleBid,setBid,bid}) => {
           type="text"
           id="bid"
           name="bid"
-          value={bid}
           onChange={handleInputChange}
         />
       </div>
