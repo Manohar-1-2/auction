@@ -40,7 +40,7 @@ export const MyAuctionPage = ({setCurrAc}) => {
       })
       console.log(res.ok)
       if(res.ok){
-        
+        setCurrAc(details)
         navigate("/auction")
       }
       
@@ -49,7 +49,7 @@ export const MyAuctionPage = ({setCurrAc}) => {
     <div className='pagebox'>
        {!isEmpty?det.map((e)=>
         <div key={e.price}>
-          <AuctionCard details={e} key={e._id} buttontext={"Start Auction"} handlestart={handlestart} t={2}/>
+          <AuctionCard details={e} key={e._id} buttontext={"Start Auction"} handle={handlestart} t={2}/>
         </div>
        ):<p>You have no auctions</p>}
       

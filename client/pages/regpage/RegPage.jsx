@@ -43,7 +43,7 @@ export const RegPage = () => {
     <div className='Page'>
 
         <div className="Opt">
-            <div className="head"><p>Register Auction</p></div>
+            <div className="head"><p>Create Auction</p></div>
             <div className='bd'>
               <form onSubmit={handleSub} className='form'>
                 <label htmlFor="itemname">Enter Item Name</label>
@@ -54,7 +54,7 @@ export const RegPage = () => {
                 <textarea name="des" id="" cols="20" rows="8" className='textarea' onChange={(e)=>setDes(e.target.value)} ></textarea>
                 <label htmlFor="file" >Upload Item Image</label>
                 <input type="file" onChange={handlefile}  />
-                <div className="sub"><button className='b'  type='submit'>Register</button></div>
+                <div className="sub"><button className='b'  type='submit'>Create Auction</button></div>
               </form>
             </div>
             

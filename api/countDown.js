@@ -12,6 +12,7 @@ function startCountdown() {
     if (countdownDuration <= 0) {
       clearInterval(countdownInterval);
       serverEventEmitter.emit("timeRanOut")
+      countdownDuration=60;
     }
   }, 1000);
 }

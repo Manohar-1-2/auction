@@ -5,6 +5,10 @@ const userSehema=new Schema({
         type:String,
         required:true
     },
+    role:{
+        type:String,
+        required:false,
+    },
     password:{
         type:String,
         required:true
@@ -44,6 +48,10 @@ const userAuctionSehema=new Schema({
         required:true
     },
     status:{
+        type:String,
+        required:false
+    },
+    winner:{
         type:String,
         required:false
     }

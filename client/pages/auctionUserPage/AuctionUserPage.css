@@ -1,10 +1,22 @@
+.bidbox{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.bidbox button{
+    width: 100px;
+    height:1.8rem;
+}
 .inpBox{
-    outline:groove;
+    border: 2px solid black;
+    height: 2rem;
+    border-radius:4px;
+
 }
 
 .main{
     display: flex;
-    flex-direction: row;
+    flex-wrap: wrap;
 }
 .lcont{
     flex: 10%;

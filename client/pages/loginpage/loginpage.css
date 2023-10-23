@@ -52,7 +52,7 @@ label{
 }
 
 .butDiv{
-    margin-top: 20px;
+    margin-top: 5px;
     display: flex;
     justify-content: center;
 }
@@ -63,4 +63,8 @@ label{
     width: 100px;
     cursor: pointer;
     border-radius: 6px;
+}
+.paraa{
+    font-size: 0.8rem;
+    text-decoration: none;
 }

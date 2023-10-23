@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import io from "socket.io-client"
+import "./AuctionPage.css"
 import { useEffect } from 'react'
 import { useState } from 'react'
 import CountdownTimer from '../componets/CountdownTimer'
@@ -18,12 +19,16 @@ export const AuctionPage = ({details}) => {
   const [currentPlacedBid, setCurrentPlacedBid] = useState('');
   const [placedBidList,setPlacedBidList]=useState([])
   const [joinedUserArray,setJoinedUserArray]=useState([])
-  
+  const ref=useRef()
   useEffect(()=>{
+    const blob = new Blob([details.img.data], { type: 'image/png' });
+    const base64String = btoa(String.fromCharCode(...new Uint8Array(details.img.data)))
+    setImg(base64String)
     const storedAccessToken = localStorage.getItem('accessToken');
     const scoket = io('http://localhost:3001', {
     auth: {
       token:  storedAccessToken,
+      aucid:details._id,
     },
   });
   scoket.on("joined",(newjoined)=>{
@@ -73,26 +78,39 @@ export const AuctionPage = ({details}) => {
      
   };
   const handleStartAuction=()=>{
+    ref.current.style.display="none";
     scoket.emit("start")
   }
 
   return (
-    <div>
-    <div className='cont'>
-        <div className="imgbox">
-            <img src={`data:image/png;base64,${img}`} alt="" />
+    <div className='ap'>
+      <div className='conta'>
+          <div className="imgbox">
+              <img src={`data:image/png;base64,${img}`} alt="" />
+          </div>
+          <div className="contentbox">
+              <p>ItemName : {details.itemName}</p>
+              <p>price : {details.price}</p>
+              <p>description : {details.des}</p>
+          </div>
+      </div>
+      <div className="action">
+        <CountdownTimer seconds={seconds} setSeconds={setSeconds} isActive={isActive} setIsActive={setIsActive}/>
+        <p>starting bid price is {details.price}</p>
+        <div className="mb">
+          <div className="joinedus">
+            <p>Joined users Log</p>
+            {joinedUserArray.map((user)=><p key={user} style={{margin:10}}>{user} Joined Auction Room</p>)}
+          </div>
+          <div className="bidsp">
+            <p>Bids Placed</p>
+            <PlacedBids  setPlacedBidList={setPlacedBidList} placedBidList={placedBidList}/>
+          </div>
         </div>
-        <div className="contentbox">
-            <p>ItemName : {details.itemName}</p>
-            <p>price : {details.price}</p>
-            <p>description : {details.des}</p>
+        <div className="stbbox">
+          <button onClick={handleStartAuction} className='stb' ref={ref}>start</button>
         </div>
-    </div>
-      {joinedUserArray.map((user)=><p key={user}>{user}</p>)}
-      <CountdownTimer seconds={seconds} setSeconds={setSeconds} isActive={isActive} setIsActive={setIsActive}/>
-      {isActive?<p>starting bid price is {startingBid}</p>:<p></p>}
-      <PlacedBids  setPlacedBidList={setPlacedBidList} placedBidList={placedBidList}/>
-      <button onClick={handleStartAuction}>start</button>
+      </div>
     </div>
   )
 }

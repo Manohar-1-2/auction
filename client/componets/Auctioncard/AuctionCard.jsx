@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import "./autioncard.css"
-export const AuctionCard = ({details,buttontext,handlejoin,handlestart,t,handleJoinAuc}) => {
+export const AuctionCard = ({details,buttontext,handle,handlestart,t,handleJoinAuc}) => {
     const [img,setImg]=useState("")
     useEffect(()=>{
         const blob = new Blob([details.img.data], { type: 'image/png' });
@@ -18,6 +18,7 @@ export const AuctionCard = ({details,buttontext,handlejoin,handlestart,t,handleJ
             <p>ItemName : {details.itemName}</p>
             <p>price : {details.price}</p>
             <p>description : {details.des}</p>
+            {details.status?<p>Status: {details.status}</p>:<></>}
             <p>JoinedUsers :</p>
             <div className="usersjoined">
                 {details.joinedUser.length!=0?<table className='tab'>
@@ -26,12 +27,8 @@ export const AuctionCard = ({details,buttontext,handlejoin,handlestart,t,handleJ
                 </table>:<p>No one joined in this Auction yet</p>}
             </div>
         </div>
-        
-        {t==1?<button className="start" onClick={()=>{handlejoin(details)}}>{buttontext}</button>:t==2?
-        <button className="start" onClick={()=>{handlestart(details)}}>{buttontext}</button>:
-        <button className="start" onClick={()=>{handleJoinAuc(details)}}>{buttontext}</button>
-        }
-        {}
+        {details.status!="completed"?<button className="start" onClick={()=>{handle(details)}}>{buttontext}</button>:<></>}
+            
     </div>
   )
 }

@@ -40,7 +40,7 @@ export const AllAuctions = ({logedUser}) => {
     <div className='allaucpage'>
         {details.map((details)=>(
         <div key={details.price}>
-          <AuctionCard details={details} buttontext={"Register for  Auction"} handlejoin={handlejoin} t={1}/>
+          <AuctionCard details={details} buttontext={"Register for  Auction"} handle={handlejoin} t={1}/>
         </div>))
         }
     </div>

@@ -35,7 +35,9 @@ export const NavBar = ({islogin,setIsLogin}) => {
                      Home
                 </Link>
                 }
-                <div className="linkCont"><a href="">About us</a></div>
+                <Link to={"/about"} className='linkCont'>
+                     About Us
+                </Link>
                 <div className="linkCont"><a href="">Contact us</a></div>
              
                 <div className="linkCont">

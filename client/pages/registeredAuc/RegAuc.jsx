@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { AuctionCard } from '../../componets/Auctioncard/AuctionCard';
 import { useNavigate } from 'react-router-dom';
 import "./reg.css"
-export const RegAuc = () => {
+export const RegAuc = ({setCurrUAc}) => {
     const [details,setDetails]=useState([]);
     const nav=useNavigate()
     const handleget=async()=>{
@@ -16,6 +16,7 @@ export const RegAuc = () => {
         setDetails(det)
     }
     async function handleJoinAuc(details){
+      setCurrUAc(details)
       const storedAccessToken = localStorage.getItem('accessToken');
       const res=await fetch("http://localhost:3002/join",{
         method: 'POST',
@@ -37,7 +38,7 @@ export const RegAuc = () => {
   return (
     <div className='reg'>
         {details.length!=0?details.map((det)=>(<div>
-            <AuctionCard details={det} buttontext={"join"} handleJoinAuc={handleJoinAuc} t={3}/>
+            <AuctionCard details={det} buttontext={"join"} handle={handleJoinAuc} t={3}/>
         </div>)):<p>You do not Register for any Auctions to join</p>}
     </div>
   )

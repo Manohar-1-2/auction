@@ -1,0 +1,13 @@
+.rb{
+    display: flex;
+    justify-content:space-around;
+}
+.rb div{
+    display: flex;
+}
+.rb div input[type="radio"]{
+    margin: 10px 10px;
+    transform: scale(1.5);
+    cursor: pointer;
+    background-color: aquamarine;
+}

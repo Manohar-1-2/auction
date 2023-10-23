@@ -1,0 +1,19 @@
+.aboutbox{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+}
+.para{
+    display: block;
+
+    margin-top: 20px;
+    margin-left: 20px;
+    font-size: 1.5rem;
+    font-weight: 300;
+}
+
+.wel{
+    font-size: 1.8rem;
+
+    font-weight: 500;
+}

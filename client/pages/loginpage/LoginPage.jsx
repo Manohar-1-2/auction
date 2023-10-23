@@ -1,23 +1,24 @@
 import React from 'react'
 import "./loginpage.css"
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate,Link } from 'react-router-dom'
+
 export const LoginPage = ({setIslogin,setLogedUser}) => {
   const [password,setPassword]=useState("")
   const [userName,setUserName]=useState("")
   const navigate = useNavigate();
   const handleLogin= async (e)=>{
     e.preventDefault()
-    const ascessTok=await fetch("http://localhost:3002/login",{
+    const ascessTok=await fetch(`http://localhost:3002/login`,{
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body:JSON.stringify({username:userName,password:password})
     })
-    const {acessTok,username}= await ascessTok.json()
+    const {acessTok,username,role}= await ascessTok.json()
     localStorage.setItem('accessToken', acessTok)
     console.log(acessTok)
     setIslogin(true)
-    setLogedUser(username)
+    setLogedUser({username,role})
     navigate("/userpage")
   }
   return (
@@ -33,18 +34,16 @@ export const LoginPage = ({setIslogin,setLogedUser}) => {
               <input type="text" id="username" required onChange={(e)=>{setUserName(e.target.value)}} />
             </div>
           </div>
-          <div>
-                      
+          <div>        
             <label htmlFor="userBox" id="pass">Password</label>
             <div className="passDiv">
               <input type="password" id="username" required onChange={(e)=>{setPassword(e.target.value)}}/>
             </div>
           </div>
+            <Link to={"/signup"} className='paraa'>Don't have an Account click<br></br> to register</Link>
           <div className="butDiv">
             <button className="sub">Login</button>
           </div>
-          
-
         </form>
       </div>
     </div>

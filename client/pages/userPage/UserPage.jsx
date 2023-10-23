@@ -12,21 +12,30 @@ export const UserPage = ({logedUser}) => {
 
         
         <p>
-          Welcome {logedUser}
+          Welcome {logedUser.username}
         </p>
         <div className="opt">
-          <Link className='b' to={"reg"}>
-            Create Auction
-          </Link>
-          <Link className='b' to={"myauctions"}>
-            My Auctions
-          </Link>
-          <Link className='b' to={"allauctions"}>
-            Register for Auction
-          </Link>
-          <Link className='b' to={"joininAuc"}>
-            Join Auction
-          </Link>
+          {logedUser.role=="admin"?
+            <>
+              <Link className='b' to={"reg"}>
+                Create Auction
+              </Link>
+              <Link className='b' to={"myauctions"}>
+                My Auctions
+              </Link>
+            </>
+            :<>
+              <Link className='b' to={"allauctions"}>
+               Register for Auction
+              </Link>
+              <Link className='b' to={"joininAuc"}>
+                Join Auction
+              </Link>
+            </>
+          }
+          
+
+         
         </div>
     </div>
   )

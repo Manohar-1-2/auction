@@ -19,11 +19,15 @@ import { HeroSeection } from '../componets/HeroSeaction/HeroSeection'
 import { AllAuctions } from '../pages/allauctions/AllAuctions'
 import { RegAuc } from '../pages/registeredAuc/RegAuc'
 import { AuctionUserPage } from '../pages/auctionUserPage/auctionUserPage'
+import { UserSignUp } from '../pages/UserSignUp/UserSignUp'
+import { About } from '../pages/About/about'
+import { AucWinning } from '../pages/AucWinning'
 function App() {
 
   const [islogin,setIslogin]=useState(false)
-  const [logedUser,setLogedUser]=useState("")
-  const [currAc,setCurrAc]=useState("")
+  const [logedUser,setLogedUser]=useState({})
+  const [currAc,setCurrAc]=useState([])
+  const [currUAc,setCurrUAc]=useState("")
   return (
     <>
     
@@ -38,13 +42,15 @@ function App() {
               <Route path='myauctions'>
                 <Route index element={<MyAuctionPage setCurrAc={setCurrAc}/>}/>
               </Route>
-              <Route path='joininAuc' element={<RegAuc/>}/>
+              <Route path='joininAuc' element={<RegAuc setCurrUAc={setCurrUAc}/>}/>
             </Route>
             <Route path={'login'} element={<LoginPage setIslogin={setIslogin} setLogedUser={setLogedUser}/>} />
+            <Route path={'about'} element={<About/>} />
+            <Route path={'signup'} element={<UserSignUp/>} />
           </Route> 
           <Route path={'auction'} element={<AuctionPage details={currAc}/>}/>
-          <Route path={'auctionUser'} element={<AuctionUserPage/>}/>  
-          
+          <Route path={'auctionUser'} element={<AuctionUserPage details={currUAc}/>}/>  
+          <Route path={'win'} element={<AucWinning/>}/>
         </Routes>
       </BrowserRouter>
 

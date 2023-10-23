@@ -14,7 +14,9 @@ connectDb()
 const server=http.createServer(app)
 let startingBidAmount=100
 let currentHighestBidder=[]
+let currAuc="";
 const {Server}=require("socket.io")
+const { SocketAddress } = require("net")
 app.use(cors())
 
 app.use(express.json({ limit: '10mb' }));
@@ -36,7 +38,8 @@ function verifyJwt(socket, next) {
       if (err) {
         return next(new Error('Authentication error: Invalid token'));
       }
-      socket.decoded = decoded; // Attach user information to the socket
+      socket.decoded = decoded;
+ //Attach user information to the socket
       next();
     });
   }
@@ -58,29 +61,24 @@ io.on("connection",(socket)=>{
     socket.on("start",()=>{
         io.emit("startAuction",startingBidAmount,()=>{console.log("auction started")})
         startCountdown()
-
-        serverEventEmitter.on("timeRanOut",()=>{
+        
+        serverEventEmitter.on("timeRanOut",async()=>{
             io.emit("auctionEnd",currentHighestBidder[0])
+            socket.to(currentHighestBidder[2]).emit(`winingAuc`,{aomount:currentHighestBidder[1]})
+            await userAuction.findByIdAndUpdate(currAuc,{status:"completed",winner:currentHighestBidder[0]})
             console.log("timeout")
         })
     })
 
     socket.on("bid",(bidAmount)=>{
         console.log(`bid is placed by user ${socket.decoded.username}:${bidAmount}`)
-        currentHighestBidder=[socket.decoded.username,bidAmount]
+        currentHighestBidder=[socket.decoded.username,bidAmount,socket.id]
         resetCountdown()
         io.emit("resetTimer")
         io.emit("placedBid",socket.decoded.username,bidAmount)
     })
 })
-const createUser= async(username,pass)=>{
-    const result=await user.create({
-        'username':username,
-        'password':pass
-    })
 
-    console.log(result)
-}
 const validateUser= async(req,res,next)=>{
     const user= await User.findOne({username:req.body.username})
     if(!user){console.log("user not found");return}
@@ -106,9 +104,32 @@ app.post("/login",async(req,res)=>{
 
     const {username}=req.body
     const acessTok=jwt.sign({username},process.env.ACESS_TOK)
-    res.json({ acessTok,username});
+    res.json({acessTok,username,role:founduser.role});
     console.log(acessTok)
 
+})
+const createUser= async(username,pass)=>{
+    const result=await user.create({
+        'username':username,
+        'password':pass
+    })
+
+    console.log(result)
+}
+app.post("/signup",async(req,res)=>{
+    try{
+        const result=await user.create({
+            'username':req.body.username,
+            'password':req.body.password,
+            'role':req.body.role
+        })
+        console.log(result)
+    }catch(e){
+        console.log(e)
+    }
+
+    res.status(200).json({s:"sucessfully created"})
+    
 })
 
 app.post("/logout",(req,res)=>{
@@ -116,7 +137,7 @@ app.post("/logout",(req,res)=>{
     invalidatedTokens.add(token);
     res.status(200).json({mess:"Sucessfully logout"})
 })
-const verify=(req,res,next)=>{
+const verify=async(req,res,next)=>{
 
     const token = req.headers.authorization;
 
@@ -128,7 +149,10 @@ const verify=(req,res,next)=>{
     }
     try {
       const decoded = jwt.verify(token.split(" ")[1], process.env.ACESS_TOK);
+     
       req.user = decoded;
+      const founduser= await user.findOne({username:req.user.username}).exec()
+      req.role=founduser.role
       next();
     } catch (error) {
       return res.status(403).json({ message: 'Invalid token' });
@@ -162,6 +186,7 @@ const upload = multer({
   });
 
 app.post("/posts",verify,upload.single('file'),(req,res)=>{
+
     const {itemname,price,des}=req.body
     createAuction(itemname,price,des,req.file.buffer,req.user.username,req,res)
     return res.status(200).json({message:"Sucessfully created"})
@@ -183,6 +208,7 @@ app.get("/auctionlist",verify,async(req,res)=>{
 app.post("/start",verify,async(req,res)=>{
     const foundedAuc=await userAuction.findByIdAndUpdate(req.body.id,{status:"running"})
     startingBidAmount=foundedAuc.price
+    currAuc=foundedAuc._id
     res.status(200).json({s:"sucess"})
     console.log(res.statusCode)
 })
